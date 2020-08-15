@@ -2,14 +2,21 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 const cron = require("node-cron");
 const axios = require("axios");
 const mongoose = require("mongoose");
+const http = require("http");
 require("dotenv").config();
 
 app.use(cors());
 app.use(bodyParser.json());
+
+const server = http.createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader("Content-Type", "text/html");
+  res.end("<h1>Hello World</h1>");
+});
 
 mongoose.connect("mongodb://127.0.0.1:27017/osuproject", {
   useNewUrlParser: true,

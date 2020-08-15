@@ -18,9 +18,12 @@ const server = http.createServer((req, res) => {
   res.end("<h1>Hello World</h1>");
 });
 
-mongoose.connect("mongodb://127.0.0.1:27017/osuproject", {
-  useNewUrlParser: true,
-});
+mongoose.connect(
+  "mongodb+srv://rma2002:alexandersam29@cluster0-omtan.mongodb.net/osuproject?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+  }
+);
 const connection = mongoose.connection;
 
 connection.once("open", function () {
@@ -40,7 +43,7 @@ var TimeSchema = new mongoose.Schema({
 // capitalize collection name
 const PPOverTime = mongoose.model("PPOverTime", TimeSchema);
 
-cron.schedule("30 * * * * ", () => {
+cron.schedule("10 * * * * * ", () => {
   let today = new Date();
   let Monthago = today.getMonth();
   let Dayago = today.getDay();

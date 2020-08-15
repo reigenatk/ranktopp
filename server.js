@@ -170,6 +170,10 @@ cron.schedule("10 * * * * * ", () => {
 });
 
 app.get("/", function (req, res) {
+  res.send(<h1>This app is working hopefully</h1>);
+});
+
+app.get("/pp", function (req, res) {
   PPOverTime.find({}, function (error, documents) {
     res.send(documents);
   });

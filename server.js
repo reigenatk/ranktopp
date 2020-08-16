@@ -11,6 +11,16 @@ require("dotenv").config();
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json"
+  );
+  next();
+});
 
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
@@ -32,7 +42,7 @@ connection.once("open", function () {
 
 var TimeSchema = new mongoose.Schema({
   day: String,
-
+  time: String,
   oneDigitpp: Number,
   twoDigitpp: Number,
   threeDigitpp: Number,

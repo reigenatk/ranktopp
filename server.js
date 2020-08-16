@@ -6,10 +6,11 @@ const PORT = process.env.PORT || 4000;
 const cron = require("node-cron");
 const axios = require("axios");
 const mongoose = require("mongoose");
-const http = require("http");
 require("dotenv").config();
 
+app.use(cors());
 app.use(bodyParser.json());
+/*
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -25,7 +26,7 @@ app.use(function (req, res, next) {
     "Access-Control-Allow-Headers",
     "X-Requested-With,content-type"
   );
-
+*/
   // Set to true if you need the website to include cookies in the requests sent
   // to the API (e.g. in case you use sessions)
   res.setHeader("Access-Control-Allow-Credentials", true);
@@ -34,11 +35,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "text/html");
-  res.end("<h1>Hello World</h1>");
-});
 
 mongoose.connect(
   "mongodb+srv://rma2002:alexandersam29@cluster0-omtan.mongodb.net/osuproject?retryWrites=true&w=majority",

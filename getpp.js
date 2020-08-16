@@ -10,11 +10,14 @@ app.use(bodyParser.json());
 app.use(cors());
 
 mongoose.connect(
-  "mongodb+srv://rma2002:alexandersam29@cluster0-omtan.mongodb.net/osuproject?retryWrites=true&w=majority",
+  "mongodb+srv://rma2002:" +
+    process.env.ATLAS_PASS +
+    "@cluster0-omtan.mongodb.net/osuproject?retryWrites=true&w=majority",
   {
     useNewUrlParser: true,
   }
 );
+
 const connection = mongoose.connection;
 
 connection.once("open", function () {

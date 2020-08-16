@@ -3,10 +3,29 @@ const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const PORT = process.env.PORT || 4000;
-
+const mongoose = require("mongoose");
 const axios = require("axios");
 
 require("dotenv").config();
+
+mongoose.connect(
+  "mongodb+srv://rma2002:" +
+    process.env.ATLAS_PASS +
+    "@cluster0-omtan.mongodb.net/osuproject?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+  }
+);
+
+var TimeSchema = new mongoose.Schema({
+  day: String,
+  time: String,
+  oneDigitpp: Number,
+  twoDigitpp: Number,
+  threeDigitpp: Number,
+  fourDigitpp: Number,
+});
+const PPOverTime = mongoose.model("PPOverTime", TimeSchema);
 
 app.use(bodyParser.json());
 app.use(function (req, res, next) {

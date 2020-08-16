@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 app.use(cors());
+app.options('*', cors());
 app.use(bodyParser.json());
 /*
 app.use(function (req, res, next) {

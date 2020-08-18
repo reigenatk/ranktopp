@@ -89,7 +89,7 @@ axios
         }
       )
       .then((response) => {
-        let currentppRequired = Math.ceil(response.data.ranking[8].pp);
+        let currentppRequired = response.data.ranking[8].pp;
         oneDigit = currentppRequired;
 
         console.log("One digit pp acquired");
@@ -104,7 +104,7 @@ axios
             }
           )
           .then((response) => {
-            let currentppRequired = Math.ceil(response.data.ranking[49].pp);
+            let currentppRequired = response.data.ranking[49].pp;
             console.log("Two digit pp acquired");
             twoDigit = currentppRequired;
             axios
@@ -117,7 +117,7 @@ axios
                 }
               )
               .then((response) => {
-                let currentppRequired = Math.ceil(response.data.ranking[49].pp);
+                let currentppRequired = response.data.ranking[49].pp;
                 threeDigit = currentppRequired;
 
                 console.log("Three digit pp acquired");
@@ -131,9 +131,7 @@ axios
                     }
                   )
                   .then((response) => {
-                    let currentppRequired = Math.ceil(
-                      response.data.ranking[49].pp
-                    );
+                    let currentppRequired = response.data.ranking[49].pp;
                     fourDigit = currentppRequired;
 
                     console.log("Four digit pp acquired");

@@ -37,27 +37,6 @@ var TimeSchema = new mongoose.Schema({
 // capitalize collection name
 const PPOverTime = mongoose.model("PPOverTime", TimeSchema);
 
-let today = new Date();
-let Monthago = today.getMonth();
-let Dayago = today.getDay();
-var days = function (month, year) {
-  return new Date(year, month, 0).getDate();
-};
-if (Dayago == 1) {
-  if (Monthago == 1) {
-    console.log("Happy new year lol");
-  } else {
-    Monthago--;
-    Dayago = days(today.getFullYear(), Monthago);
-  }
-} else {
-  Dayago--;
-}
-/*
-  PPOverTime.user_track.remove({
-    access_time: { $lt: new Date(today.getFullYear(), Monthago, Dayago) },
-  });
-  */
 console.log("Old Data Deleted...");
 console.log("Fetching New Data");
 let monthword = today.toLocaleString("default", { month: "short" });

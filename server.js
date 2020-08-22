@@ -41,9 +41,10 @@ app.get("/", function (req, res) {
   res.send("<h1>This app is working hopefully</h1>");
 });
 
+// return 30 latest entries
 app.get("/pp", function (req, res) {
-  PPOverTime.find({}, function (error, documents) {
-    res.send(documents);
+  PPOverTime.find.skip(db.collection.count() - 1).then((response) => {
+    res.send(response);
   });
 });
 

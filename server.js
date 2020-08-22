@@ -41,10 +41,11 @@ app.get("/", function (req, res) {
   res.send("<h1>This app is working hopefully</h1>");
 });
 
-// return 30 latest entries
+// limit to returning only the last 20 entries
 app.get("/pp", function (req, res) {
-  PPOverTime.find.skip(db.collection.count() - 1).then((response) => {
-    res.send(response);
+  let q = PPOverTime.find().limit(20).sort({ _id: 1 });
+  q.exec(function (err, data) {
+    res.send(data);
   });
 });
 

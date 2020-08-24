@@ -37,6 +37,8 @@ var TimeSchema = new mongoose.Schema({
 // capitalize collection name
 const PPOverTime = mongoose.model("PPOverTime", TimeSchema);
 
+let today = new Date();
+
 console.log("Old Data Deleted...");
 console.log("Fetching New Data");
 let monthword = today.toLocaleString("default", { month: "short" });

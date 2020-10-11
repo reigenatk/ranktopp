@@ -1,23 +1,23 @@
-const express = require("express");
-const app = express();
-const bodyParser = require("body-parser");
-const cors = require("cors");
+const express = require ('express');
+const app = express ();
+const bodyParser = require ('body-parser');
+const cors = require ('cors');
 const PORT = process.env.PORT || 4000;
-const mongoose = require("mongoose");
-const axios = require("axios");
+const mongoose = require ('mongoose');
+const axios = require ('axios');
 
-require("dotenv").config();
+require ('dotenv').config ();
 
-mongoose.connect(
-  "mongodb+srv://rma2002:" +
+mongoose.connect (
+  'mongodb+srv://rma2002:' +
     process.env.ATLAS_PASS +
-    "@cluster0-omtan.mongodb.net/osuproject?retryWrites=true&w=majority",
+    '@cluster0-omtan.mongodb.net/osuproject?retryWrites=true&w=majority',
   {
     useNewUrlParser: true,
   }
 );
 
-var TimeSchema = new mongoose.Schema({
+var TimeSchema = new mongoose.Schema ({
   day: String,
   time: String,
   oneDigitpp: Number,
@@ -25,42 +25,42 @@ var TimeSchema = new mongoose.Schema({
   threeDigitpp: Number,
   fourDigitpp: Number,
 });
-const PPOverTime = mongoose.model("PPOverTime", TimeSchema);
+const PPOverTime = mongoose.model ('PPOverTime', TimeSchema);
 
-app.use(bodyParser.json());
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+app.use (bodyParser.json ());
+app.use (function (req, res, next) {
+  res.header ('Access-Control-Allow-Origin', '*'); // update to match the domain you will make the request from
+  res.header (
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
   );
-  next();
+  next ();
 });
 
-app.get("/", function (req, res) {
-  res.send("<h1>This app is working hopefully</h1>");
+app.get ('/', function (req, res) {
+  res.send ('<h1>This app is working hopefully</h1>');
 });
 
 // limit to returning only the last 20 entries
-app.get("/pp", function (req, res) {
-  let q = PPOverTime.find().limit(20).sort({ _id: 1 });
-  q.exec(function (err, data) {
-    res.send(data);
+app.get ('/pp', function (req, res) {
+  let q = PPOverTime.find ().limit (20).sort ({_id: -1});
+  q.exec (function (err, data) {
+    res.send (data);
   });
 });
 
-app.get("/accesstoken", function (req, res) {
+app.get ('/accesstoken', function (req, res) {
   let body = {
     client_id: 2128,
     client_secret: process.env.API_KEY,
-    grant_type: "client_credentials",
-    scope: "public",
+    grant_type: 'client_credentials',
+    scope: 'public',
   };
-  axios.post("https://osu.ppy.sh/oauth/token", body).then((response) => {
-    res.send(response.data.access_token);
+  axios.post ('https://osu.ppy.sh/oauth/token', body).then (response => {
+    res.send (response.data.access_token);
   });
 });
 
-app.listen(PORT, function () {
-  console.log("Server is running on Port: " + PORT);
+app.listen (PORT, function () {
+  console.log ('Server is running on Port: ' + PORT);
 });

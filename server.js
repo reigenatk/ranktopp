@@ -73,6 +73,24 @@ function compare( a, b ) {
   return 0;
 }
 
+const QueryForMonthlyData = (queries, callback) => {
+  let ret = [];
+  for (let i = 0; i < 13; i++) {
+    GetStuffFromDB(queries[i], (err, vals) => {
+      if (err) {
+        return;
+      }
+      console.log(vals);
+      ret.push(vals[0]);
+      console.log(ret.length);
+      if (ret.length === 13) {
+        callback(ret);
+      }
+    })
+  }
+  
+}
+
 // so to summarize this endpoint will return an array of at most 12 objects
 // representing the last 12 months' first day's data (if it exists). (0 to 12 months ago, 13 entries total needed)
 app.get('/monthlypp', function(req, res) {
@@ -84,37 +102,16 @@ app.get('/monthlypp', function(req, res) {
     queries.push(query);
     today.setMonth(today.getMonth() - 1);
   }
-  let ret = [];
-  for (let i = 0; i < 13; i++) {
-    GetStuffFromDB(queries[i], (err, vals) => {
-      if (err) {
-        return;
-      }
-      console.log(vals);
-      ret.push(vals[0]);
-      if (i == 12) {
-        // if i is 12 we are finished- now inside ret should be a bunch of entries for 0-12 months ago
-        // if the entry was NOT found in the mongodb collection then it will be undefined
-        // lets only return defined values- we know it goes something like
-        // object, object, ..., undefined, undefined...
-
-        // so loop and remove undefined elements
-        for (let j = 13; j >= 0; j--) {
-          if (!ret[j]) {
-            ret.splice(j, 1);
-          }
-          else {
-            break;
-          }
-        }
-        
-        ret.sort(compare);
-        console.log(ret);
-        res.send(ret);
-      }
+  
+  QueryForMonthlyData(queries, (returnArray) => {
+    var filtered = returnArray.filter(function(x) {
+      return x !== undefined;
+    });
+      
+      filtered.sort(compare);
+      console.log(filtered);
+      res.send(filtered);
     })
-
-  }
 })
 
 app.get ('/accesstoken', function (req, res) {

@@ -49,6 +49,74 @@ app.get ('/pp', function (req, res) {
   });
 });
 
+// thank you stack overflow
+// some weird stuff with find and promises, luckily this post existed:
+// https://stackoverflow.com/questions/20858299/model-find-toarray-claiming-to-not-have-toarray-method
+const GetStuffFromDB = (query, callback) => {
+  PPOverTime.find({"day": query}).exec((err, stuff) => {
+    callback(err, stuff);
+  })
+}
+
+// need this function because apparently the for loop that is entering values into
+// the ret array in the method below, is NOT done in order, but rather asynchronous
+// this means that the entry for November could come before december, for instance.
+// I will order them in terms of ascending fourdigitpp requirements
+// under the dubious but plausible assumption that it will increase a fair amount in a month
+function compare( a, b ) {
+  if ( a.fourDigitpp< b.fourDigitpp ){
+    return -1;
+  }
+  if ( a.fourDigitpp> b.fourDigitpp ){
+    return 1;
+  }
+  return 0;
+}
+
+// so to summarize this endpoint will return an array of at most 12 objects
+// representing the last 12 months' first day's data (if it exists). (0 to 12 months ago, 13 entries total needed)
+app.get('/monthlypp', function(req, res) {
+  // Get Todays Month + Year
+  let today = new Date();
+  let queries = [];
+  for (let i = 0; i < 13; i++) {
+    let query = today.toLocaleString("default", { month: "short" }) + " " + 1 + " " + today.getFullYear();
+    queries.push(query);
+    today.setMonth(today.getMonth() - 1);
+  }
+  let ret = [];
+  for (let i = 0; i < 13; i++) {
+    GetStuffFromDB(queries[i], (err, vals) => {
+      if (err) {
+        return;
+      }
+      console.log(vals);
+      ret.push(vals[0]);
+      if (i == 12) {
+        // if i is 12 we are finished- now inside ret should be a bunch of entries for 0-12 months ago
+        // if the entry was NOT found in the mongodb collection then it will be undefined
+        // lets only return defined values- we know it goes something like
+        // object, object, ..., undefined, undefined...
+
+        // so loop and remove undefined elements
+        for (let j = 13; j >= 0; j--) {
+          if (!ret[j]) {
+            ret.splice(j, 1);
+          }
+          else {
+            break;
+          }
+        }
+        
+        ret.sort(compare);
+        console.log(ret);
+        res.send(ret);
+      }
+    })
+
+  }
+})
+
 app.get ('/accesstoken', function (req, res) {
   let body = {
     client_id: 2128,

@@ -43,7 +43,7 @@ console.log("Old Data Deleted...");
 console.log("Fetching New Data");
 let monthword = today.toLocaleString("default", { month: "short" });
 let timee = today.getHours() + ":" + today.getMinutes();
-let dayy = monthword + " " + today.getDate();
+let dayy = monthword + " " + today.getDate() + " " + today.getFullYear;
 let access_token = "";
 let body = {
   client_id: 2128,
@@ -56,6 +56,7 @@ axios
   .then((response) => {
     access_token = response.data.access_token;
     let oneDigit, twoDigit, threeDigit, fourDigit;
+    let oneDigitHolder, twoDigitHolder, threeDigitHolder, fourDigitHolder;
     oneDigit = twoDigit = threeDigit = fourDigit = 0;
 
     console.log("access token receieved");
@@ -72,6 +73,7 @@ axios
       .then((response) => {
         let currentppRequired = response.data.ranking[8].pp;
         oneDigit = currentppRequired;
+        oneDigitHolder = response.data.ranking[49].user.username;
 
         console.log("One digit pp acquired");
 
@@ -88,6 +90,8 @@ axios
             let currentppRequired = response.data.ranking[49].pp;
             console.log("Two digit pp acquired");
             twoDigit = currentppRequired;
+            twoDigitHolder = response.data.ranking[49].user.username;
+
             axios
               .get(
                 "https://osu.ppy.sh/api/v2/rankings/osu/performance?cursor[page]=20",
@@ -100,6 +104,7 @@ axios
               .then((response) => {
                 let currentppRequired = response.data.ranking[49].pp;
                 threeDigit = currentppRequired;
+                threeDigitHolder = response.data.ranking[49].user.username;
 
                 console.log("Three digit pp acquired");
                 axios
@@ -114,15 +119,19 @@ axios
                   .then((response) => {
                     let currentppRequired = response.data.ranking[49].pp;
                     fourDigit = currentppRequired;
+                    fourDigitHolder = response.data.ranking[49].user.username;
 
                     console.log("Four digit pp acquired");
                     let newObject = new PPOverTime({
                       day: dayy,
-                      time: timee,
                       oneDigitpp: oneDigit,
+                      oneHolder: oneDigitHolder,
                       twoDigitpp: twoDigit,
+                      twoHolder: twoDigitHolder,
                       threeDigitpp: threeDigit,
+                      threeHolder: threeDigitHolder,
                       fourDigitpp: fourDigit,
+                      fourHolder: fourDigitHolder
                     });
                     newObject.save(function (err, db) {
                       if (!err) {

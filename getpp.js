@@ -43,7 +43,7 @@ console.log("Old Data Deleted...");
 console.log("Fetching New Data");
 let monthword = today.toLocaleString("default", { month: "short" });
 let timee = today.getHours() + ":" + today.getMinutes();
-let dayy = monthword + " " + today.getDate() + " " + today.getFullYear;
+let dayy = monthword + " " + today.getDate() + " " + today.getFullYear();
 let access_token = "";
 let body = {
   client_id: 2128,

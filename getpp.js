@@ -28,9 +28,13 @@ var TimeSchema = new mongoose.Schema({
   day: String,
   time: String,
   oneDigitpp: Number,
+  oneDigitHolder: String,
   twoDigitpp: Number,
+  twoDigitHolder: String,
   threeDigitpp: Number,
+  threeDigitHolder: String,
   fourDigitpp: Number,
+  fourDigitHolder: String,
 });
 
 // create mongoose model
@@ -51,6 +55,105 @@ let body = {
   grant_type: "client_credentials",
   scope: "public",
 };
+
+// these are the current pp requirements for each milestone
+let oneDigit, twoDigit, threeDigit, fourDigit;
+
+// this is the name of the person holding the milestone
+let oneDigitHolder, twoDigitHolder, threeDigitHolder, fourDigitHolder;
+
+// immediately invoked function
+(getAuthToken = async () => {
+  let response = await axios.post("https://osu.ppy.sh/oauth/token", body);
+  access_token = response.data.access_token;
+  console.log("access token received");
+  await getAllPPValues();
+  saveValuesIntoDB();
+})();
+
+getAllPPValues = async () => {
+  await getOneDigitPP();
+  await getTwoDigitPP();
+  await getThreeDigitPP();
+  await getFourDigitPP();
+};
+
+getOneDigitPP = async () => {
+  let response = await axios.get(
+    "https://osu.ppy.sh/api/v2/rankings/osu/performance?cursor[page]=1",
+    {
+      headers: {
+        Authorization: "Bearer " + access_token,
+      },
+    }
+  );
+  oneDigit = response.data.ranking[8].pp;
+  oneDigitHolder = response.data.ranking[8].user.username;
+  console.log("One digit pp acquired");
+};
+
+getTwoDigitPP = async () => {
+  let response = await axios.get(
+    "https://osu.ppy.sh/api/v2/rankings/osu/performance?cursor[page]=2",
+    {
+      headers: {
+        Authorization: "Bearer " + access_token,
+      },
+    }
+  );
+  twoDigit = response.data.ranking[49].pp;
+  twoDigitHolder = response.data.ranking[49].user.username;
+  console.log("Two digit pp acquired");
+};
+
+getThreeDigitPP = async () => {
+  let response = await axios.get(
+    "https://osu.ppy.sh/api/v2/rankings/osu/performance?cursor[page]=20",
+    {
+      headers: {
+        Authorization: "Bearer " + access_token,
+      },
+    }
+  );
+  threeDigit = response.data.ranking[49].pp;
+  threeDigitHolder = response.data.ranking[49].user.username;
+  console.log("Three digit pp acquired");
+};
+
+getFourDigitPP = async () => {
+  let response = await axios.get(
+    "https://osu.ppy.sh/api/v2/rankings/osu/performance?cursor[page]=200",
+    {
+      headers: {
+        Authorization: "Bearer " + access_token,
+      },
+    }
+  );
+  fourDigit = response.data.ranking[49].pp;
+  fourDigitHolder = response.data.ranking[49].user.username;
+  console.log("Four digit pp acquired");
+};
+
+saveValuesIntoDB = () => {
+  let newObject = new PPOverTime({
+    day: dayy,
+    oneDigitpp: oneDigit,
+    oneHolder: oneDigitHolder,
+    twoDigitpp: twoDigit,
+    twoHolder: twoDigitHolder,
+    threeDigitpp: threeDigit,
+    threeHolder: threeDigitHolder,
+    fourDigitpp: fourDigit,
+    fourHolder: fourDigitHolder,
+  });
+  newObject.save(function (err, db) {
+    if (!err) {
+      console.log("Saved new values into DB");
+    }
+  });
+};
+
+/* Ugly callback hell version that i had before
 axios
   .post("https://osu.ppy.sh/oauth/token", body)
   .then((response) => {
@@ -73,7 +176,7 @@ axios
       .then((response) => {
         let currentppRequired = response.data.ranking[8].pp;
         oneDigit = currentppRequired;
-        oneDigitHolder = response.data.ranking[49].user.username;
+        oneDigitHolder = response.data.ranking[8].user.username;
 
         console.log("One digit pp acquired");
 
@@ -131,7 +234,7 @@ axios
                       threeDigitpp: threeDigit,
                       threeHolder: threeDigitHolder,
                       fourDigitpp: fourDigit,
-                      fourHolder: fourDigitHolder
+                      fourHolder: fourDigitHolder,
                     });
                     newObject.save(function (err, db) {
                       if (!err) {
@@ -146,3 +249,4 @@ axios
   .catch((error) => {
     console.log(error);
   });
+  */

@@ -138,13 +138,13 @@ saveValuesIntoDB = () => {
   let newObject = new PPOverTime({
     day: dayy,
     oneDigitpp: oneDigit,
-    oneHolder: oneDigitHolder,
+    oneDigitHolder: oneDigitHolder,
     twoDigitpp: twoDigit,
-    twoHolder: twoDigitHolder,
+    twoDigitHolder: twoDigitHolder,
     threeDigitpp: threeDigit,
-    threeHolder: threeDigitHolder,
+    threeDigitHolder: threeDigitHolder,
     fourDigitpp: fourDigit,
-    fourHolder: fourDigitHolder,
+    fourDigitHolder: fourDigitHolder,
   });
   newObject.save(function (err, db) {
     if (!err) {
